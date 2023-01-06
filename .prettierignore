@@ -1,0 +1,4 @@
+# No need to format built js files
+build/
+# We could let prettier format .hbs files, but we should test if this break anything
+*.hbs

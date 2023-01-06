@@ -1,0 +1,33 @@
+{
+    "name": "enphase",
+    "version": "1.0.0",
+    "main": "index.ts",
+    "author": "Theo Depresle <theo.depresle@gmail.com>",
+    "license": "MIT",
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "^18.11.18",
+        "eslint": "^8.31.0",
+        "prettier": "^2.8.1",
+        "typescript": "^4.9.4"
+    },
+    "scripts": {
+        "build": "tsc --build tsconfig.json",
+        "check:lint": "eslint  --ext .js,.jsx,.ts,.tsx src/",
+        "check:format": "prettier --check src/",
+        "check:ts": "tsc --noEmit --project tsconfig.json",
+        "check:all": "yarn run check:ts && yarn run check:lint && yarn run check:format",
+        "fix:format": "prettier --write src/ ",
+        "fix": "yarn run check:lint --fix && yarn run fix:format"
+    },
+    "dependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.47.1",
+        "@typescript-eslint/parser": "^5.47.1",
+        "cross-fetch": "^3.1.5",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "got": "^12.5.3",
+        "https": "^1.0.0",
+        "mqtt": "^4.3.7"
+    }
+}
