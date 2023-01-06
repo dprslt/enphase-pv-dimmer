@@ -2,13 +2,11 @@
  import got from 'got'
 import { MeterReading, MeterReadings } from './types/IvpMetersReadings.js'
 
-export const TOKEN = "eyJraWQiOiI3ZDEwMDA1ZC03ODk5LTRkMGQtYmNiNC0yNDRmOThlZTE1NmIiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiIxMjIyMzkwODQxOTAiLCJpc3MiOiJFbnRyZXoiLCJlbnBoYXNlVXNlciI6Im93bmVyIiwiZXhwIjoxNzA0MTQxNDAxLCJpYXQiOjE2NzI2MDU0MDEsImp0aSI6IjY0Y2FiZDNiLWIyYWUtNGU0Zi04MGI5LTgxMDhmMDI1MDQ3MCIsInVzZXJuYW1lIjoidGhlby5kZXByZXNsZUBnbWFpbC5jb20ifQ.Eg5i1js0vudYAL6ISq3Uw8zTDGKZKZBo5bhQZXh2ot-H8Tdk-dZWDEhx9p3MiEbe9lGL0I0YUVp_MR1QTphytQ"
-export const ENVOY_HOSTNAME = "192.168.17.90"
-
-export const DIMMER_HOSTNAME = "192.168.17.68"
-
-const LOAD_POWER = 1800;
-const MAX_PWR = 75
+export const TOKEN = process.env['TOKEN']
+export const ENVOY_HOSTNAME = process.env['ENVOY_HOSTNAME']
+export const DIMMER_HOSTNAME = process.env['DIMMER_HOSTNAME']
+const LOAD_POWER = process.env['LOAD_POWER'] ?  Number.parseInt(process.env['LOAD_POWER']): 100;
+const MAX_PWR = process.env['MAX_PWR'] ? Number.parseInt(process.env['MAX_PWR']): 50;
 
 
 export const envoyUrl = (path?: string) => {

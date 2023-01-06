@@ -1,9 +1,9 @@
-export class LoadModuler {
-    constructor(
-        private DimmerPort: ,
-    ) {
+// export class LoadModuler {
+//     constructor(
+//         private DimmerPort: ,
+//     ) {
 
-    }
+//     }
 
-    public async moduleLoad()
-}
+//     public async moduleLoad()
+// }
