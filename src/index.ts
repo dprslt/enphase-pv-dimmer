@@ -1,12 +1,17 @@
 
  import got from 'got'
 import { MeterReading, MeterReadings } from './types/IvpMetersReadings.js'
+import { connect } from "mqtt"  // import connect from mqtt
 
 export const TOKEN = process.env['TOKEN']
 export const ENVOY_HOSTNAME = process.env['ENVOY_HOSTNAME']
 export const DIMMER_HOSTNAME = process.env['DIMMER_HOSTNAME']
 const LOAD_POWER = process.env['LOAD_POWER'] ?  Number.parseInt(process.env['LOAD_POWER']): 100;
 const MAX_PWR = process.env['MAX_PWR'] ? Number.parseInt(process.env['MAX_PWR']): 50;
+
+const MQTT_HOST = process.env['MQTT_HOST']
+
+let client = connect(`mqtt://${MQTT_HOST}`) // create a client
 
 
 export const envoyUrl = (path?: string) => {
@@ -89,16 +94,37 @@ export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): 
             '[PWR]', Math.round(flooredValue /100 * LOAD_POWER), 'W'
         )
 
-
-
-        // console.log('[REAL]', houseConsumption, '[CURRENT LOAD]', loadPercentage, "% =>", currentTheoricalMaxLoad, 'W')
-
-        // console.log("We're exporting", exportFlow, 'W', 'with a dimmer already set at', currentdimmerSetting,'% that represent', currentTheoricalMaxLoad,'W')
-        // console.log("That's", loadPercentage, '% of the load', "Setting the load to ", flooredValue)
-
         await setPower(flooredValue)
     }
    
+}
+
+async function sendMetricsToHA(envoyMetersValues: EnvoyMetersValue) {
+    // MQTT Discovery
+    const consumptionConfig = {
+        "dev_cla": "power",
+        "unit_of_meas": "W",
+        "stat_cla": "measurement",
+        "name": "power_grid",
+        "state_topic": "homeassistant/sensor/envoy-90/state",
+        "stat_t": "homeassistant/sensor/envoy-90/state",
+        "avty_t": "homeassistant/sensor/envoy-90/status",
+        "uniq_id": "90_power_grid",
+        "value_template": "{{ value_json.power }}",
+        "dev": {
+            "ids": "envoy-90",
+            "name": "envoy-90",
+            "sw": "PV Router",
+            "mdl": "ESP8266 192.168.17.68",
+            "mf": "Dprslt"
+        }
+    }
+    await client.publish('homeassistant/sensor/envoy/power_grid/config', JSON.stringify(consumptionConfig))
+
+
+    await client.publish('homeassistant/sensor/envoy/state')
+
+    
 }
 
 async function fetchMetersAndModule() {
