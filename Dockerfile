@@ -1,11 +1,11 @@
 FROM node:alpine
 
-WORKDIR /APP
+WORKDIR /app
 
 COPY package.json .
 RUN yarn
 
-COPY . /app
+COPY . .
 RUN yarn build
 
 FROM node:alpine  
