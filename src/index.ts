@@ -144,6 +144,8 @@ async function installHaAutoDiscovery() {
     }
     await client.publish('homeassistant/sensor/envoy-90/power_solar/config', JSON.stringify(productionConfig))
 
+    await client.publish('homeassistant/sensor/envoy-90/status', "online" )
+
     console.log("HA Autodiscovery configured")
 }
 
@@ -156,7 +158,6 @@ async function publishValuesToMQTT (envoyMetersValues: EnvoyMetersValue) {
         power_grid: envoyMetersValues.consumption.instantaneousDemand,
         power_solar: envoyMetersValues.production.instantaneousDemand,
     }))
-    await client.publish('homeassistant/sensor/envoy-90/status', "online" )
 }
 
 async function fetchMetersAndModule() {
@@ -210,5 +211,8 @@ fetchMetersAndModule().then(() => {
 process.on('SIGINT', async () => {
     console.log("Turning off and setting load to 0")
     await setPower(0)
+    if(client.connected) {
+        await client.publish('homeassistant/sensor/envoy-90/status', "offline" )
+    }
     process.exit(0)
 });
