@@ -4,7 +4,7 @@
  
  import got from 'got'
 import { MeterReading, MeterReadings } from './types/IvpMetersReadings.js'
-import { connect } from "mqtt"  // import connect from mqtt
+import { connect } from "async-mqtt"  // import connect from mqtt
 
 export const TOKEN = process.env['TOKEN']
 export const ENVOY_HOSTNAME = process.env['ENVOY_HOSTNAME']
@@ -13,9 +13,6 @@ const LOAD_POWER = process.env['LOAD_POWER'] ?  Number.parseInt(process.env['LOA
 const MAX_PWR = process.env['MAX_PWR'] ? Number.parseInt(process.env['MAX_PWR']): 50;
 
 const MQTT_HOST = process.env['MQTT_HOST']
-
-let client = connect(`mqtt://${MQTT_HOST}`) // create a client
-
 
 export const envoyUrl = (path?: string) => {
     return `https://${ENVOY_HOSTNAME}/${path}`
@@ -102,7 +99,10 @@ export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): 
    
 }
 
-async function sendMetricsToHA(envoyMetersValues: EnvoyMetersValue) {
+async function installHaAutoDiscovery() {
+
+    console.log("Installing HA autodiscovery entries")
+
     // MQTT Discovery
     const consumptionConfig = {
         "dev_cla": "power",
@@ -113,25 +113,56 @@ async function sendMetricsToHA(envoyMetersValues: EnvoyMetersValue) {
         "stat_t": "homeassistant/sensor/envoy-90/state",
         "avty_t": "homeassistant/sensor/envoy-90/status",
         "uniq_id": "90_power_grid",
-        "value_template": "{{ value_json.power }}",
+        "value_template": "{{ value_json.power_grid }}",
         "dev": {
             "ids": "envoy-90",
             "name": "envoy-90",
             "sw": "PV Router",
-            "mdl": "ESP8266 192.168.17.68",
+            "mdl": "Enphase Envoy 192.168.17.90",
             "mf": "Dprslt"
         }
     }
-    await client.publish('homeassistant/sensor/envoy/power_grid/config', JSON.stringify(consumptionConfig))
+    await client.publish('homeassistant/sensor/envoy-90/power_grid/config', JSON.stringify(consumptionConfig))
 
+    const productionConfig = {
+        "dev_cla": "power",
+        "unit_of_meas": "W",
+        "stat_cla": "measurement",
+        "name": "power_solar",
+        "state_topic": "homeassistant/sensor/envoy-90/state",
+        "stat_t": "homeassistant/sensor/envoy-90/state",
+        "avty_t": "homeassistant/sensor/envoy-90/status",
+        "uniq_id": "90_power_solar",
+        "value_template": "{{ value_json.power_solar }}",
+        "dev": {
+            "ids": "envoy-90",
+            "name": "envoy-90",
+            "sw": "PV Router",
+            "mdl": "Enphase Envoy 192.168.17.90",
+            "mf": "Dprslt"
+        }
+    }
+    await client.publish('homeassistant/sensor/envoy-90/power_solar/config', JSON.stringify(productionConfig))
 
-    await client.publish('homeassistant/sensor/envoy/state')
+    console.log("HA Autodiscovery configured")
+}
 
-    
+async function publishValuesToMQTT (envoyMetersValues: EnvoyMetersValue) {
+    if(!client.connected) {
+        console.log("Not connected to MQTT broker, skipping")
+        return
+    }
+    await client.publish('homeassistant/sensor/envoy-90/state', JSON.stringify({
+        power_grid: envoyMetersValues.consumption.instantaneousDemand,
+        power_solar: envoyMetersValues.production.instantaneousDemand,
+    }))
+    await client.publish('homeassistant/sensor/envoy-90/status', "online" )
 }
 
 async function fetchMetersAndModule() {
     const envoyMetersValues = await getMetersValuesFromEnvoy();
+
+    const sendToHaPromise = publishValuesToMQTT(envoyMetersValues) 
     
     const {production, consumption} = envoyMetersValues
     const netComsuption = consumption.instantaneousDemand + production.instantaneousDemand
@@ -146,17 +177,35 @@ async function fetchMetersAndModule() {
     }
 
     console.log("")
+
+    try {
+        await sendToHaPromise;
+    } catch (e) {
+        console.error(e)
+    }
 }
 
+async function run() {
 
-fetchMetersAndModule()
+}
+let client = connect(`mqtt://${MQTT_HOST}`)
+
+client.on('connect', () =>{
+    console.log("connected to MQTT");
+    installHaAutoDiscovery()
+})
+
 function installTimeout() {
     setTimeout(() => {
         fetchMetersAndModule().then(() => installTimeout())
     }, 5000)
 }
+fetchMetersAndModule().then(() => {
+    installTimeout()
+})
 
-installTimeout()
+
+
 
 process.on('SIGINT', async () => {
     console.log("Turning off and setting load to 0")
