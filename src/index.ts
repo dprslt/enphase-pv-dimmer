@@ -20,7 +20,6 @@ export const envoyUrl = (path?: string) => {
 
 export const setPower = async (power:number): Promise<void> => {
     const cleanedPower = Math.floor(power);
-    console.log("Set Power To ", cleanedPower);
     await got.get(`http://${DIMMER_HOSTNAME}/?POWER=${cleanedPower}`);
 }
 
@@ -193,8 +192,6 @@ async function fetchMetersAndModule() {
         await setPower(0)
     }
 
-    console.log("")
-
     try {
         await sendToHaPromise;
     } catch (e) {
@@ -214,12 +211,17 @@ client.on('connect', () =>{
 
 function installTimeout() {
     setTimeout(() => {
-        fetchMetersAndModule().then(() => installTimeout())
+        runAndInstalllTm()
     }, 5000)
 }
-fetchMetersAndModule().then(() => {
-    installTimeout()
-})
+
+function runAndInstalllTm() {
+    fetchMetersAndModule().catch((e) => {
+        console.error("An error occured")
+        console.error(e)
+    }).finally(() => installTimeout())
+}
+runAndInstalllTm()
 
 
 
