@@ -68,7 +68,7 @@ export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): 
     if(gridFlow > LOAD_POWER * 0.01 && currentDimmerSetting === 0) {
         console.log(
             "-",
-            new Date().toISOString,
+            new Date().toISOString(),
             "[SUN]", envoyMetersValues.production.instantaneousDemand,
             "[GRID]", envoyMetersValues.consumption.instantaneousDemand,
             "[USED]", netComsuption,
@@ -100,7 +100,7 @@ export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): 
         
         console.log(
             "-",
-            new Date().toISOString,
+            new Date().toISOString(),
             "[SUN]", envoyMetersValues.production.instantaneousDemand,
             "[GRID]", envoyMetersValues.consumption.instantaneousDemand,
             "[USED]", netComsuption,
