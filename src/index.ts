@@ -58,14 +58,26 @@ export const getMetersValuesFromEnvoy = async (): Promise<EnvoyMetersValue> => {
 
 export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): Promise<void> => {
 
+    const netComsuption = envoyMetersValues.consumption.instantaneousDemand + envoyMetersValues.production.instantaneousDemand
+
     let gridFlow = envoyMetersValues.consumption.instantaneousDemand
     const currentDimmerSetting = await getMaxPower() || 0
 
     
     // Define a threshold around 1% of the load since this is the smaller step we can do with the dimmer
     if(gridFlow > LOAD_POWER * 0.01 && currentDimmerSetting === 0) {
-        console.log("We're not exporting anything, we should cut the load for now")
-        // TODO improve this algorithm, we should slowly decrease the load
+        console.log(
+            "-",
+            new Date().toISOString,
+            "[SUN]", envoyMetersValues.production.instantaneousDemand,
+            "[GRID]", envoyMetersValues.consumption.instantaneousDemand,
+            "[USED]", netComsuption,
+            '[OVERFLOW]', -gridFlow, 
+            '[PERC]', currentDimmerSetting,
+            '[NEWPERC]',0 , 
+            '[PWR]', 0, 'W',
+            "We're not exporting anything, we should cut the load for now"
+        )
         await setPower(0)
     } else {
         // const currentTheoricalMaxLoad = LOAD_POWER * currentdimmerSetting/100
@@ -85,8 +97,13 @@ export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): 
         const newPercValue = currentDimmerSetting + neededChange;
         // If the value is < 0 we just need to cut the load
         const flooredValue = Math.max(Math.min(Math.floor(newPercValue), MAX_PWR), 0)
-
+        
         console.log(
+            "-",
+            new Date().toISOString,
+            "[SUN]", envoyMetersValues.production.instantaneousDemand,
+            "[GRID]", envoyMetersValues.consumption.instantaneousDemand,
+            "[USED]", netComsuption,
             '[OVERFLOW]', overflow, 
             '[PERC]', currentDimmerSetting,
             '[PERC_CHANGE]', neededChange < 0 ? '-':'+', neededChange,'%',
@@ -167,7 +184,6 @@ async function fetchMetersAndModule() {
     
     const {production, consumption} = envoyMetersValues
     const netComsuption = consumption.instantaneousDemand + production.instantaneousDemand
-    console.log("[SUN]", production.instantaneousDemand, "[GRID]", consumption.instantaneousDemand, "[USED]", netComsuption)
 
    
     try {
