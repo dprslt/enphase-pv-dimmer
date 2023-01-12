@@ -22,7 +22,10 @@ export const setPower = async (power:number): Promise<void> => {
     const cleanedPower = Math.floor(power);
     await got.get(`http://${DIMMER_HOSTNAME}/?POWER=${cleanedPower}`, {
         timeout: {
-            request: 5000
+            request: 4000,
+            socket: 1000,
+            send: 1000,
+            response: 1000
         }
     });
 }
@@ -36,7 +39,10 @@ export const getEnvoy = async <T>(path: string) : Promise<T> => {
             rejectUnauthorized: false
         },
         timeout: {
-            request: 5000
+            request: 4000,
+            socket: 1000,
+            send: 1000,
+            response: 1000
         }
         
     }).json<T>()
