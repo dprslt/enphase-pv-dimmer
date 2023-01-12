@@ -206,38 +206,50 @@ async function fetchMetersAndModule() {
     }
 }
 
-async function run() {
 
+
+
+function sleep(ms: number) {
+    // add ms millisecond timeout before promise resolution
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+let shouldStop = false;
+
+async function run() {
+    while(!shouldStop) {
+        try {
+
+            await fetchMetersAndModule()
+        } catch (e) {
+            console.error("An error occured")
+            console.error(e)
+        }
+
+        await sleep(5000)
+    }
 }
-let client = connect(`mqtt://${MQTT_HOST}`)
+
+let client = connect(`mqtt://${MQTT_HOST}`, {
+    keepalive: true,
+    connectTimeout: 4000
+})
 
 client.on('connect', () =>{
     console.log("connected to MQTT");
     installHaAutoDiscovery()
 })
 
-function installTimeout() {
-    setTimeout(() => {
-        runAndInstalllTm()
-    }, 5000)
-}
-
-function runAndInstalllTm() {
-    fetchMetersAndModule().catch((e) => {
-        console.error("An error occured")
-        console.error(e)
-    }).finally(() => installTimeout())
-}
-runAndInstalllTm()
-
-
-
-
 process.on('SIGINT', async () => {
     console.log("Turning off and setting load to 0")
+    shouldStop = true
     await setPower(0)
     if(client.connected) {
         await client.publish('homeassistant/sensor/envoy-90/status', "offline" )
     }
     process.exit(0)
 });
+
+
+
+run()
