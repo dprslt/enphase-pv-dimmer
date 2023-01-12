@@ -82,9 +82,8 @@ export const moduleLoadFromEnvoy = async (envoyMetersValues: EnvoyMetersValue): 
             '[PERC]', currentDimmerSetting,
             '[NEWPERC]',0 , 
             '[PWR]', 0, 'W',
-            "We're not exporting anything, we should cut the load for now"
+            "We're not exporting anything, and the load is OFF"
         )
-        await setPower(0)
     } else {
         // const currentTheoricalMaxLoad = LOAD_POWER * currentdimmerSetting/100
 
@@ -231,13 +230,20 @@ async function run() {
 }
 
 let client = connect(`mqtt://${MQTT_HOST}`, {
-    keepalive: true,
+    keepalive: 10,
     connectTimeout: 4000
 })
 
 client.on('connect', () =>{
     console.log("connected to MQTT");
     installHaAutoDiscovery()
+})
+
+client.on('disconnect', () =>{
+    console.log("connection to MQTT Lost");
+})
+client.on('error', () =>{
+    console.log("An error occured with MQTT");
 })
 
 process.on('SIGINT', async () => {
