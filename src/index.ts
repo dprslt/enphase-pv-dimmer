@@ -18,15 +18,17 @@ export const envoyUrl = (path?: string) => {
     return `https://${ENVOY_HOSTNAME}/${path}`
 } 
 
+const webGetTimeouts = {
+    request: 4000,
+    socket: 1000,
+    send: 1000,
+    response: 1000
+}
+
 export const setPower = async (power:number): Promise<void> => {
     const cleanedPower = Math.floor(power);
     await got.get(`http://${DIMMER_HOSTNAME}/?POWER=${cleanedPower}`, {
-        timeout: {
-            request: 4000,
-            socket: 1000,
-            send: 1000,
-            response: 1000
-        }
+        timeout: webGetTimeouts
     });
 }
 
@@ -38,18 +40,15 @@ export const getEnvoy = async <T>(path: string) : Promise<T> => {
         https: {
             rejectUnauthorized: false
         },
-        timeout: {
-            request: 4000,
-            socket: 1000,
-            send: 1000,
-            response: 1000
-        }
+        timeout: webGetTimeouts
         
     }).json<T>()
 }
 
 export const getMaxPower = async (): Promise<number | undefined> => {
-    const result = await got.get(`http://${DIMMER_HOSTNAME}/state`).text();
+    const result = await got.get(`http://${DIMMER_HOSTNAME}/state`, {
+        timeout: webGetTimeouts
+    }).text();
     const textNumber = result.split(';')[0]
     if(textNumber){
         return Number.parseInt(textNumber)
