@@ -21,7 +21,7 @@ export class GridState {
     // We should improve this by using this API to detect sunset
     // https://sunrise-sunset.org/api
     isNight(): boolean {
-        // TODO improve
+        // TODO improve support timezone to work with real hours
         return this.time.hours() > 22 || this.time.hours() < 7;
     }
 
@@ -31,6 +31,10 @@ export class GridState {
 
     isDimmerInactive(): boolean {
         return this.dimmerSetting === 0;
+    }
+
+    isDimmerActive(): boolean {
+        return !this.isDimmerInactive();
     }
 
     // Define a threshold around 1% of the load since this is the smaller step we can do with the dimmer
@@ -45,8 +49,8 @@ export class GridState {
         return this.waterTemp < 55;
     }
 
-    log(percChange: number = 0, newPerc: number = 0, newPower = 0) {
-        console.log(
+    private genericLogItems(): Array<string | number | undefined> {
+        return [
             '[STATE] - ',
             this.time.format('ddd DD MMM YYYY HH:mm:ss.SSS'),
             '[SUN]',
@@ -61,6 +65,16 @@ export class GridState {
             this.waterTemp,
             '[PERC]',
             this.dimmerSetting,
+        ];
+    }
+
+    logNoProd() {
+        console.log(...this.genericLogItems());
+    }
+
+    logDimmer(percChange: number = 0, newPerc: number = 0, newPower = 0) {
+        console.log(
+            ...this.genericLogItems(),
             '[PERC_CHANGE]',
             percChange < 0 ? '-' : '+',
             percChange,
@@ -71,5 +85,9 @@ export class GridState {
             newPower,
             'W'
         );
+    }
+
+    logNight(heating: boolean) {
+        console.log(...this.genericLogItems(), '[NIGHT-HEATING]', heating ? 'yes' : 'no');
     }
 }

@@ -59,10 +59,10 @@ export class Router {
                 const flooredValue = Math.max(Math.min(Math.floor(newPercValue), this.loadConfig.maxPower), 0);
                 await this.ports.dimmer.modulePower(flooredValue);
                 // TODO add these sinfo tho the logger
-                gridState.log(neededChange, flooredValue, Math.round((flooredValue / 100) * this.loadConfig.loadPower));
+                gridState.logDimmer(neededChange, flooredValue, Math.round((flooredValue / 100) * this.loadConfig.loadPower));
             } else {
                 // TODO replace this by a logger
-                gridState.log();
+                gridState.logNoProd();
             }
         } else {
             // Night time, it's time to control water temp
@@ -70,6 +70,13 @@ export class Router {
                 // Stay far from 50 to avoid harmonics
                 // TODO improve this to handle a relay with a new function in the dimmer
                 await this.ports.dimmer.modulePower(this.loadConfig.maxPower);
+                // TODO this code must change to handle a relay during the night
+                gridState.logNight(true);
+            } else {
+                if (gridState.isDimmerActive()) {
+                    await this.ports.dimmer.modulePower(0);
+                }
+                gridState.logNight(false);
             }
         }
         await sendToHaPromise;
