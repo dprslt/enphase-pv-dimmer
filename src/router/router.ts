@@ -67,8 +67,9 @@ export class Router {
         } else {
             // Night time, it's time to control water temp
             if (gridState.isWaterUnderLowRange()) {
-                // Stay under 50 to avoid harmonics
-                await this.ports.dimmer.modulePower(40);
+                // Stay far from 50 to avoid harmonics
+                // TODO improve this to handle a relay with a new function in the dimmer
+                await this.ports.dimmer.modulePower(this.loadConfig.maxPower);
             }
         }
         await sendToHaPromise;
