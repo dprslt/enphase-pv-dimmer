@@ -1,0 +1,101 @@
+import { HighlightSpanKind } from 'typescript';
+import type { LoadConfig } from '../config.js';
+import { Broker } from '../ports-adapters/broker/broker.js';
+import { Dimmer, DimmerValue } from '../ports-adapters/dimmer/dimmer.js';
+import { HomeAssistant } from '../ports-adapters/domotic/HomeAssistant.js';
+import { Meter, MetersValues } from '../ports-adapters/meters/meter.js';
+import { GridState } from './grid-state.js';
+
+export type RouterPorts = {
+    broker: Broker;
+    dimmer: Dimmer;
+    meter: Meter;
+};
+
+export class Router {
+    private homeAssistant: HomeAssistant;
+
+    constructor(private readonly ports: RouterPorts, private readonly loadConfig: LoadConfig) {
+        this.homeAssistant = new HomeAssistant(ports.broker, '90-envoy');
+    }
+
+    async loopIteration() {
+        const envoyMetersValues = await this.ports.meter.readValues();
+        const sendToHaPromise = this.homeAssistant.publishMeteringValues(envoyMetersValues);
+        const currentDimmerValues = await this.ports.dimmer.readValues();
+
+        const gridState = new GridState(envoyMetersValues, currentDimmerValues, this.loadConfig);
+
+        /*
+
+            
+
+            It's day
+                have we reached the max temp ?
+                    check load is stopped then break
+
+                Are we overflowing ?
+                    module the load to cover the output
+                    Store the last values for maybe one hour
+                    find a function to check if the progression is slow between measures (slow variance)
+                    If the variance is slow, and the needed load is over 110% trigger the relay
+                    We shoul'nt trigger the relay more than twice per hour ?
+                    The alg should auto adapt but we can help him dans modulate the load acordingly (NEW_PERC - 100) 
+                Nope
+                    Simply log
+
+            Is the night ? How to determine this ? Datetime after 22 ? API coucher de soleil ?
+                is temps lower than 50 deg ?
+                    Heat until 50, use meteo forecast to determine if we should heat more ?
+                    This should be done using the relay to avoid useless harmonics
+                Nope
+                    Do nothing
+
+        */
+
+        if (gridState.isDay()) {
+            // It's the day let's see if we can route some power from the pvs
+            if (!gridState.isGridFlowUnderThreesold() || !gridState.isDimmerInactive()) {
+                const overflow = -gridState.gridFlow;
+                const neededChange = (overflow / this.loadConfig.loadPower) * 100;
+                const newPercValue = gridState.dimmerSetting + neededChange;
+                // If the value is < 0 we just need to cut the load
+                const flooredValue = Math.max(Math.min(Math.floor(newPercValue), this.loadConfig.maxPower), 0);
+                await this.ports.dimmer.modulePower(flooredValue);
+                // TODO add these sinfo tho the logger
+                gridState.log(neededChange, flooredValue, Math.round((flooredValue / 100) * this.loadConfig.loadPower));
+            } else {
+                // TODO replace this by a logger
+                gridState.log();
+            }
+        } else {
+            // Night time, it's time to control water temp
+            if (gridState.isWaterUnderLowRange()) {
+                // Stay under 50 to avoid harmonics
+                await this.ports.dimmer.modulePower(40);
+            }
+        }
+        await sendToHaPromise;
+    }
+
+    async initialize() {
+        this.ports.broker.onConnect(() => {
+            console.log('connected to MQTT');
+            this.homeAssistant.installAutoDiscovery();
+        });
+
+        this.ports.broker.onDisconnect(() => {
+            console.log('connection to MQTT Lost');
+        });
+        this.ports.broker.onError(() => {
+            console.log('An error occured with MQTT');
+        });
+    }
+
+    async stop() {
+        console.log('Turning off and setting load to 0');
+        // shouldStop = true;
+        await this.ports.dimmer.modulePower(0);
+        await this.ports.broker.publish('homeassistant/sensor/envoy-90/status', 'offline');
+    }
+}
