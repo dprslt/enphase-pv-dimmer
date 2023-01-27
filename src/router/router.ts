@@ -55,9 +55,8 @@ export class Router {
 
         if (gridState.isDay()) {
             // It's the day let's see if we can route some power from the pvs
-            if (!gridState.isGridFlowUnderThreesold() || !gridState.isDimmerInactive()) {
-                const overflow = -gridState.gridFlow;
-                const neededChange = (overflow / this.loadConfig.loadPower) * 100;
+            if (gridState.isOverflowOverThreesold() || !gridState.isDimmerInactive()) {
+                const neededChange = (gridState.overflow / this.loadConfig.loadPower) * 100;
                 const newPercValue = gridState.dimmerSetting + neededChange;
                 // If the value is < 0 we just need to cut the load
                 const flooredValue = Math.max(Math.min(Math.floor(newPercValue), this.loadConfig.maxPower), 0);
@@ -80,20 +79,20 @@ export class Router {
 
     async initialize() {
         this.ports.broker.onConnect(() => {
-            console.log('connected to MQTT');
+            console.log('[MQTT] - Connected');
             this.homeAssistant.installAutoDiscovery();
         });
 
         this.ports.broker.onDisconnect(() => {
-            console.log('connection to MQTT Lost');
+            console.log('[MQTT] - Connection lost');
         });
         this.ports.broker.onError(() => {
-            console.log('An error occured with MQTT');
+            console.log('[MQTT] - An error occured');
         });
     }
 
     async stop() {
-        console.log('Turning off and setting load to 0');
+        console.log('[ROUTER] - Turning off and setting load to 0');
         // shouldStop = true;
         await this.ports.dimmer.modulePower(0);
         await this.ports.broker.publish('homeassistant/sensor/envoy-90/status', 'offline');

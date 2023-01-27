@@ -15,7 +15,7 @@ export class HomeAssistant {
     }
 
     async installAutoDiscovery() {
-        console.log('Installing HA autodiscovery entries');
+        console.log('[HomeAssistant] - Installing autodiscovery entries');
 
         // MQTT Discovery
         const consumptionConfig = {
@@ -48,12 +48,12 @@ export class HomeAssistant {
 
         await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/status`, 'online');
 
-        console.log('HA Autodiscovery configured');
+        console.log('[HomeAssistant] - Autodiscovery configured');
     }
 
     async publishMeteringValues(envoyMetersValues: EnvoyMetersValue) {
         if (!this.brokerPort.isReady) {
-            console.log('Not connected to MQTT broker, skipping');
+            console.log('[HomeAssistant] - Not connected to the broker, skipping');
             return;
         }
         await this.brokerPort.publish(
