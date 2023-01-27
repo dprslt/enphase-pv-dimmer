@@ -18,6 +18,8 @@ export class GridState {
         this.time = moment();
     }
 
+    // We should improve this by using this API to detect sunset
+    // https://sunrise-sunset.org/api
     isNight(): boolean {
         return this.time.hours() > 23 || this.time.hours() < 6;
     }

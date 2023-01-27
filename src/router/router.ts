@@ -16,7 +16,7 @@ export class Router {
     private homeAssistant: HomeAssistant;
 
     constructor(private readonly ports: RouterPorts, private readonly loadConfig: LoadConfig) {
-        this.homeAssistant = new HomeAssistant(ports.broker, '90-envoy');
+        this.homeAssistant = new HomeAssistant(ports.broker, 'envoy-90');
     }
 
     async loopIteration() {
@@ -27,9 +27,6 @@ export class Router {
         const gridState = new GridState(envoyMetersValues, currentDimmerValues, this.loadConfig);
 
         /*
-
-            
-
             It's day
                 have we reached the max temp ?
                     check load is stopped then break

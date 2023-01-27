@@ -26,7 +26,7 @@ export class HomeAssistant {
             state_topic: `homeassistant/sensor/${this.sensorName}/state`,
             stat_t: `homeassistant/sensor/${this.sensorName}/state`,
             avty_t: `homeassistant/sensor/${this.sensorName}/status`,
-            uniq_id: '90_power_grid',
+            uniq_id: `${this.sensorName}-grid`,
             value_template: '{{ value_json.power_grid }}',
             dev: this.devInfos,
         };
@@ -40,7 +40,7 @@ export class HomeAssistant {
             state_topic: `homeassistant/sensor/${this.sensorName}/state`,
             stat_t: `homeassistant/sensor/${this.sensorName}/state`,
             avty_t: `homeassistant/sensor/${this.sensorName}/status`,
-            uniq_id: '90_power_solar',
+            uniq_id: `${this.sensorName}-solar`,
             value_template: '{{ value_json.power_solar }}',
             dev: this.devInfos,
         };
