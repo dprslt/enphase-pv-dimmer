@@ -21,7 +21,8 @@ export class GridState {
     // We should improve this by using this API to detect sunset
     // https://sunrise-sunset.org/api
     isNight(): boolean {
-        return this.time.hours() > 23 || this.time.hours() < 6;
+        // TODO improve
+        return this.time.hours() > 22 || this.time.hours() < 7;
     }
 
     isDay(): boolean {
