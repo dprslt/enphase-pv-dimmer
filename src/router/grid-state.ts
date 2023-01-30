@@ -22,7 +22,7 @@ export class GridState {
     // https://sunrise-sunset.org/api
     isNight(): boolean {
         // TODO improve support timezone to work with real hours
-        return this.time.hours() > 22 || this.time.hours() < 7;
+        return this.time.hours() < 7;
     }
 
     isDay(): boolean {
@@ -47,6 +47,13 @@ export class GridState {
             return false;
         }
         return this.waterTemp < 55;
+    }
+
+    isWaterOverTarget(): boolean {
+        if (this.waterTemp == undefined) {
+            return false;
+        }
+        return this.waterTemp < 50;
     }
 
     private genericLogItems(): Array<string | number | undefined> {

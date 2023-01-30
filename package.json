@@ -19,7 +19,9 @@
         "check:ts": "tsc --noEmit --project tsconfig.json",
         "check:all": "yarn run check:ts && yarn run check:lint && yarn run check:format",
         "fix:format": "prettier --write src/ ",
-        "fix": "yarn run check:lint --fix && yarn run fix:format"
+        "fix": "yarn run check:lint --fix && yarn run fix:format",
+        "start": "node ./build/index.js",
+        "dev": "yarn build ; yarn start"
     },
     "dependencies": {
         "@typescript-eslint/eslint-plugin": "^5.47.1",

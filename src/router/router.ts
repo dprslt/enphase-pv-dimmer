@@ -70,14 +70,14 @@ export class Router {
                 // Stay far from 50 to avoid harmonics
                 // TODO improve this to handle a relay with a new function in the dimmer
                 if (gridState.dimmerSetting < this.loadConfig.maxPower) {
+                    // TODO this code must change to handle a relay during the night
                     await this.ports.dimmer.modulePower(this.loadConfig.maxPower);
                 }
-                // TODO this code must change to handle a relay during the night
                 gridState.logNight(true);
+            } else if (gridState.isWaterOverTarget() && gridState.isDimmerActive()) {
+                await this.ports.dimmer.modulePower(0);
+                gridState.logNight(false);
             } else {
-                if (gridState.isDimmerActive()) {
-                    await this.ports.dimmer.modulePower(0);
-                }
                 gridState.logNight(false);
             }
         }
