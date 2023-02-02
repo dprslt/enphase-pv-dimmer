@@ -28,7 +28,8 @@
         "dev": "yarn build ; yarn start",
         "test": "uvu -r tsm tests '.*.test.ts'",
         "test:watch": "watchlist src tests -- yarn test",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "ci": "yarn install --frozen-lockfile"
     },
     "dependencies": {
         "@typescript-eslint/eslint-plugin": "^5.47.1",
