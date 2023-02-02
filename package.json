@@ -10,7 +10,6 @@
         "eslint": "^8.31.0",
         "prettier": "^2.8.1",
         "prettier-eslint": "^15.0.1",
-        "ts-node": "^10.9.1",
         "tsm": "^2.3.0",
         "typescript": "^4.9.4",
         "uvu": "^0.5.6",
