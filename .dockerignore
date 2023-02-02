@@ -1,0 +1,6 @@
+./build/
+./coverage
+./husky
+./vscode
+./node_modules
+./tests
