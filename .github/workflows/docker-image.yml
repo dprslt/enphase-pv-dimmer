@@ -34,7 +34,6 @@ jobs:
             - run: yarn test
 
     docker:
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         runs-on: ubuntu-latest
         steps:
             - name: Set up QEMU
@@ -49,5 +48,6 @@ jobs:
             - name: Build and push
               uses: docker/build-push-action@v4
               with:
-                  push: true
                   tags: dprslt/enphase-cyrilc-dimmer:latest
+                  platforms: linux/amd64,linux/arm/v7
+                  push: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
