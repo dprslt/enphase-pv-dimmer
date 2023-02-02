@@ -52,6 +52,6 @@ jobs:
             - name: Build and push
               uses: docker/build-push-action@v4
               with:
-                  tags: dprslt/enphase-cyrilc-dimmer:latest
+                  tags: dprslt/dprslt/pv-router:latest
                   platforms: linux/amd64,linux/arm/v7
                   push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
