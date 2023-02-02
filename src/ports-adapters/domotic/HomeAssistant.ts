@@ -1,4 +1,4 @@
-import { EnvoyMetersValue } from '../../index-legacy.js';
+import { LightMeterReading } from '../../types/IvpMetersReadings.js';
 import { Broker } from '../broker/broker.js';
 
 export class HomeAssistant {
@@ -51,7 +51,7 @@ export class HomeAssistant {
         console.log('[HomeAssistant] - Autodiscovery configured');
     }
 
-    async publishMeteringValues(envoyMetersValues: EnvoyMetersValue) {
+    async publishMeteringValues(envoyMetersValues: { consumption: LightMeterReading; production: LightMeterReading }) {
         if (!this.brokerPort.isReady) {
             console.log('[HomeAssistant] - Not connected to the broker, skipping');
             return;

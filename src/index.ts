@@ -7,6 +7,7 @@ import { RestLocalEnvoyMeter } from './ports-adapters/meters/rest-local-envoy-me
 
 import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import moment from 'moment';
+import { MomentClock } from './ports-adapters/clock/momentClock.js';
 dotenv.config();
 
 let shouldStop = false;
@@ -16,6 +17,7 @@ const config = buildConfigFromEnv();
 const mqttAdapter = new BrokerMQTT(config.mqttHost);
 const wifiDimmer = new WifiDimmer(config.dimmerHostname);
 const envoyMeter = new RestLocalEnvoyMeter(config.envoyHostname, config.envoyToken);
+const momentClock = new MomentClock();
 
 moment.locale('fr');
 
@@ -24,6 +26,7 @@ const router = new Router(
         broker: mqttAdapter,
         dimmer: wifiDimmer,
         meter: envoyMeter,
+        clock: momentClock,
     },
     {
         loadPower: config.loadPower,

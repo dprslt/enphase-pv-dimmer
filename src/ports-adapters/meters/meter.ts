@@ -1,6 +1,6 @@
-import { MeterReading } from '../../types/IvpMetersReadings.js';
+import { LightMeterReading } from '../../types/IvpMetersReadings.js';
 
-export type MetersValues = { production: MeterReading; consumption: MeterReading };
+export type MetersValues = { production: LightMeterReading; consumption: LightMeterReading };
 
 export interface Meter {
     readValues(): Promise<MetersValues>;

@@ -8,25 +8,14 @@ export class GridState {
     netComsuption: number;
     dimmerSetting: number;
     waterTemp?: number;
-    time: Moment;
+    timestamp: Moment;
 
     constructor(private meters: MetersValues, private dimmer: DimmerValue, private loadConfig: LoadConfig) {
         this.overflow = -meters.consumption.instantaneousDemand;
         this.netComsuption = meters.consumption.instantaneousDemand + meters.production.instantaneousDemand;
         this.dimmerSetting = dimmer.perc || 0;
         this.waterTemp = dimmer.temp;
-        this.time = moment();
-    }
-
-    // We should improve this by using this API to detect sunset
-    // https://sunrise-sunset.org/api
-    isNight(): boolean {
-        // TODO improve support timezone to work with real hours
-        return this.time.hours() < 7;
-    }
-
-    isDay(): boolean {
-        return !this.isNight();
+        this.timestamp = moment();
     }
 
     isDimmerInactive(): boolean {
@@ -46,20 +35,20 @@ export class GridState {
         if (this.waterTemp == undefined) {
             return false;
         }
-        return this.waterTemp < 55;
+        return this.waterTemp < 50;
     }
 
     isWaterOverTarget(): boolean {
         if (this.waterTemp == undefined) {
             return false;
         }
-        return this.waterTemp < 50;
+        return this.waterTemp > 55;
     }
 
     private genericLogItems(): Array<string | number | undefined> {
         return [
             '[STATE] - ',
-            this.time.format('ddd DD MMM YYYY HH:mm:ss.SSS'),
+            this.timestamp.format('ddd DD MMM YYYY HH:mm:ss.SSS'),
             '[SUN]',
             this.meters.production.instantaneousDemand.toFixed(1),
             '[GRID]',

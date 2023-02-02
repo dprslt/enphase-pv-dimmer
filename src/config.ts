@@ -1,5 +1,3 @@
-import { envoyUrl } from './index-legacy.js';
-
 export type RouterConfig = {
     mqttHost: string;
     dimmerHostname: string;

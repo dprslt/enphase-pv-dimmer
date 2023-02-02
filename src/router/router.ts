@@ -1,15 +1,16 @@
-import { HighlightSpanKind } from 'typescript';
-import type { LoadConfig } from '../config.js';
-import { Broker } from '../ports-adapters/broker/broker.js';
-import { Dimmer, DimmerValue } from '../ports-adapters/dimmer/dimmer.js';
-import { HomeAssistant } from '../ports-adapters/domotic/HomeAssistant.js';
-import { Meter, MetersValues } from '../ports-adapters/meters/meter.js';
-import { GridState } from './grid-state.js';
+import type { LoadConfig } from '../config';
+import { Broker } from '../ports-adapters/broker/broker';
+import { Clock } from '../ports-adapters/clock/clock';
+import { Dimmer } from '../ports-adapters/dimmer/dimmer';
+import { HomeAssistant } from '../ports-adapters/domotic/HomeAssistant';
+import { Meter } from '../ports-adapters/meters/meter';
+import { GridState } from './grid-state';
 
 export type RouterPorts = {
     broker: Broker;
     dimmer: Dimmer;
     meter: Meter;
+    clock: Clock;
 };
 
 export class Router {
@@ -50,7 +51,7 @@ export class Router {
 
         */
 
-        if (gridState.isDay()) {
+        if (this.ports.clock.isDay()) {
             // It's the day let's see if we can route some power from the pvs
             if (gridState.isOverflowOverThreesold() || !gridState.isDimmerInactive()) {
                 const neededChange = (gridState.overflow / this.loadConfig.loadPower) * 100;

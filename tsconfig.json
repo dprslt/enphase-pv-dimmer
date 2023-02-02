@@ -3,8 +3,8 @@
         // Disabled because of https://github.com/Microsoft/TypeScript/issues/29172
         // "outDir": "dist",
 
-        "module": "node16",
-        "moduleResolution": "node16",
+        "module": "AMD",
+        "moduleResolution": "node",
         "moduleDetection": "force",
         "target": "ES2020", // Node.js 14
         "lib": ["DOM", "DOM.Iterable", "ES2020"],
@@ -29,5 +29,5 @@
         "skipLibCheck": true
     },
     "exclude": ["node_modules", "src/**/*.spec.ts"],
-    "include": ["src"]
+    "include": ["src", "tests/router.spec.js"]
 }

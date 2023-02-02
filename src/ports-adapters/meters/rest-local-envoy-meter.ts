@@ -1,4 +1,4 @@
-import { MeterReadings } from '../../types/IvpMetersReadings.js';
+import { LightMeterReadings } from '../../types/IvpMetersReadings.js';
 import { timeHttpGetJson } from '../http.js';
 import { Meter, MetersValues } from './meter.js';
 
@@ -20,7 +20,7 @@ export class RestLocalEnvoyMeter implements Meter {
     };
 
     async readValues(): Promise<MetersValues> {
-        const meterReadings = await this.getEnvoy<MeterReadings>('ivp/meters/readings');
+        const meterReadings = await this.getEnvoy<LightMeterReadings>('ivp/meters/readings');
 
         const [production, consumption] = meterReadings;
         return {
