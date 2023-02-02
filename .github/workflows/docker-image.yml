@@ -33,7 +33,7 @@ jobs:
             - run: yarn ci
             - run: yarn test
 
-    # Based on https://dev.to/cloudx/multi-arch-docker-images-the-easy-way-with-github-actions-4k54
+    # Based on https://github.com/docker/build-push-action and https://docs.docker.com/build/ci/github-actions/examples/
     docker:
         needs:
             - build
@@ -53,5 +53,5 @@ jobs:
               uses: docker/build-push-action@v4
               with:
                   tags: dprslt/dprslt/pv-router:latest
-                  platforms: linux/amd64,linux/arm/v7
+                  platforms: linux/amd64,linux/arm64
                   push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
