@@ -33,6 +33,7 @@ jobs:
             - run: yarn ci
             - run: yarn test
 
+    # Based on https://dev.to/cloudx/multi-arch-docker-images-the-easy-way-with-github-actions-4k54
     docker:
         runs-on: ubuntu-latest
         steps:
@@ -50,4 +51,4 @@ jobs:
               with:
                   tags: dprslt/enphase-cyrilc-dimmer:latest
                   platforms: linux/amd64,linux/arm/v7
-                  push: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+                  push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
