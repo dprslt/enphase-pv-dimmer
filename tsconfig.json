@@ -1,18 +1,14 @@
 {
     "compilerOptions": {
-        // Disabled because of https://github.com/Microsoft/TypeScript/issues/29172
-        // "outDir": "dist",
-
-        "module": "AMD",
-        "moduleResolution": "node",
-        "moduleDetection": "force",
-        "target": "ES2020", // Node.js 14
-        "lib": ["DOM", "DOM.Iterable", "ES2020"],
+        "module": "Node16",
+        // "moduleResolution": "node",
+        // "moduleDetection": "force",
+        "target": "ES2021",
+        "lib": ["ES2021"],
         "allowSyntheticDefaultImports": true, // To provide backwards compatibility, Node.js allows you to import most CommonJS packages with a default import. This flag tells TypeScript that it's okay to use import on CommonJS modules.
         "resolveJsonModule": false, // ESM doesn't yet support JSON modules.
         "outDir": "build",
         "sourceMap": true,
-        "jsx": "react",
         "declaration": true,
         "pretty": true,
         "newLine": "lf",
@@ -29,5 +25,5 @@
         "skipLibCheck": true
     },
     "exclude": ["node_modules", "src/**/*.spec.ts"],
-    "include": ["src", "tests/router.spec.js"]
+    "include": ["src", "tests"]
 }

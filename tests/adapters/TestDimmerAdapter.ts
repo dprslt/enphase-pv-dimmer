@@ -1,5 +1,5 @@
-import { Dimmer, DimmerValue } from '../../src/ports-adapters/dimmer/dimmer';
-import { TestAdapter } from './TestAdapter';
+import { Dimmer, DimmerValue } from '../../src/ports-adapters/dimmer/dimmer.js';
+import { TestAdapter } from './TestAdapter.js';
 
 export class TestDimmerAdapter extends TestAdapter implements Dimmer {
     power: number;

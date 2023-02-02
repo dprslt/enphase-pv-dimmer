@@ -1,5 +1,5 @@
-import { Meter, MetersValues } from '../../src/ports-adapters/meters/meter';
-import { TestAdapter } from './TestAdapter';
+import { Meter, MetersValues } from '../../src/ports-adapters/meters/meter.js';
+import { TestAdapter } from './TestAdapter.js';
 
 export class TestMeterAdapter extends TestAdapter implements Meter {
     consumption: number = 0;

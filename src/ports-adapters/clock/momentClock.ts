@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { Clock } from './clock';
+import { Clock } from './clock.js';
 
 export class MomentClock implements Clock {
     // We should improve this by using this API to detect sunset

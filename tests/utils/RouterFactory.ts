@@ -1,10 +1,10 @@
-import { LoadConfig } from '../../src/config';
-import { Router, RouterPorts } from '../../src/router/router';
-import { TestAdapter } from '../adapters/TestAdapter';
-import { TestBrokerAdapter } from '../adapters/TestBrokerAdapter';
-import { buildBasicDimmer, TestDimmerAdapter } from '../adapters/TestDimmerAdapter';
-import { TestFixedClockAdapter } from '../adapters/TestFixedClock';
-import { TestMeterAdapter } from '../adapters/TestMeterAdapter';
+import { LoadConfig } from '../../src/config.js';
+import { Router, RouterPorts } from '../../src/router/router.js';
+import { TestAdapter } from '../adapters/TestAdapter.js';
+import { TestBrokerAdapter } from '../adapters/TestBrokerAdapter.js';
+import { buildBasicDimmer, TestDimmerAdapter } from '../adapters/TestDimmerAdapter.js';
+import { TestFixedClockAdapter } from '../adapters/TestFixedClock.js';
+import { TestMeterAdapter } from '../adapters/TestMeterAdapter.js';
 
 export type RouterAndPorts = {
     router: Router;

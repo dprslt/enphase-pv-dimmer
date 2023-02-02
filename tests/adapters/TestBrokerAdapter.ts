@@ -1,5 +1,5 @@
-import { Broker } from '../../src/ports-adapters/broker/broker';
-import { TestAdapter } from './TestAdapter';
+import { Broker } from '../../src/ports-adapters/broker/broker.js';
+import { TestAdapter } from './TestAdapter.js';
 
 export class TestBrokerAdapter extends TestAdapter implements Broker {
     messages: Array<{ key: string; value: string }> = [];

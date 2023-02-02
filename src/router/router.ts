@@ -1,10 +1,10 @@
-import type { LoadConfig } from '../config';
-import { Broker } from '../ports-adapters/broker/broker';
-import { Clock } from '../ports-adapters/clock/clock';
-import { Dimmer } from '../ports-adapters/dimmer/dimmer';
-import { HomeAssistant } from '../ports-adapters/domotic/HomeAssistant';
-import { Meter } from '../ports-adapters/meters/meter';
-import { GridState } from './grid-state';
+import type { LoadConfig } from '../config.js';
+import { Broker } from '../ports-adapters/broker/broker.js';
+import { Clock } from '../ports-adapters/clock/clock.js';
+import { Dimmer } from '../ports-adapters/dimmer/dimmer.js';
+import { HomeAssistant } from '../ports-adapters/domotic/HomeAssistant.js';
+import { Meter } from '../ports-adapters/meters/meter.js';
+import { GridState } from './grid-state.js';
 
 export type RouterPorts = {
     broker: Broker;

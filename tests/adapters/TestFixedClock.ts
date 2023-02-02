@@ -1,5 +1,5 @@
-import { Clock } from '../../src/ports-adapters/clock/clock';
-import { TestAdapter } from './TestAdapter';
+import { Clock } from '../../src/ports-adapters/clock/clock.js';
+import { TestAdapter } from './TestAdapter.js';
 
 export class TestFixedClockAdapter extends TestAdapter implements Clock {
     makeIteration(): void {
