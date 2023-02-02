@@ -7,11 +7,10 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/src/index.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": ["${workspaceFolder}/build/**/*.js"],
-            "console": "integratedTerminal"
+            "name": "Debug Current File",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "runtimeExecutable": "./node_modules/.bin/ts-node-esm"
         }
     ]
 }

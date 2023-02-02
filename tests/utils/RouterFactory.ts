@@ -16,14 +16,10 @@ export type RouterAndPorts = {
     };
     config: LoadConfig;
 };
-export const createRouterWithWaterTankFromConfig = (): RouterAndPorts => {
-    const config = {
-        loadPower: 1000,
-        maxPower: 100,
-    };
+export const createRouterWithWaterTankFromConfig = (config: LoadConfig): RouterAndPorts => {
+    const dimmer = buildBasicDimmer(config);
+    const meter = new TestMeterAdapter(0, 0, dimmer, config);
 
-    const dimmer = buildBasicDimmer();
-    const meter = new TestMeterAdapter();
     const broker = new TestBrokerAdapter();
     const clock = new TestFixedClockAdapter();
 
