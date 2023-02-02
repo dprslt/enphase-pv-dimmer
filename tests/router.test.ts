@@ -75,7 +75,11 @@ nightTestsSuite('It heatWater and stop when the temp is good', async () => {
     await router.loopIteration();
     assert.is(testAdapters.dimmer.power, 100);
 
-    testAdapters.dimmer.temp = 60;
+    testAdapters.dimmer.temp = 56;
+    await router.loopIteration();
+    assert.is(testAdapters.dimmer.power, 0);
+
+    testAdapters.dimmer.temp = 54;
     await router.loopIteration();
     assert.is(testAdapters.dimmer.power, 0);
 });

@@ -28,9 +28,11 @@ export class GridState {
 
     // Define a threshold around 1% of the load since this is the smaller step we can do with the dimmer
     isOverflowOverThreesold(): boolean {
+        // TODO move this to config
         return this.overflow > this.loadConfig.loadPower * 0.01;
     }
 
+    // TODO get theses values outside in a config and a separate class
     isWaterUnderLowRange(): boolean {
         if (this.waterTemp == undefined) {
             return false;
