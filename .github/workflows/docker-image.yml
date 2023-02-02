@@ -35,6 +35,9 @@ jobs:
 
     # Based on https://dev.to/cloudx/multi-arch-docker-images-the-easy-way-with-github-actions-4k54
     docker:
+        needs:
+            - build
+            - tests
         runs-on: ubuntu-latest
         steps:
             - name: Set up QEMU
