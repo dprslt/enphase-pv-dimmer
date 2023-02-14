@@ -34,7 +34,7 @@ export class GridState {
 
     // TODO get theses values outside in a config and a separate class
     isWaterUnderLowRange(): boolean {
-        if (this.waterTemp == undefined) {
+        if (this.waterTemp == undefined || this.waterTemp === 0) {
             return false;
         }
         return this.waterTemp < 50;

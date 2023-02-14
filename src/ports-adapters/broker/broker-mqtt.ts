@@ -9,6 +9,8 @@ export class BrokerMQTT implements Broker {
             keepalive: 10,
             connectTimeout: 4000,
         });
+
+        this.client.on('offline', () => this.client.reconnect());
     }
     onConnect(cb: () => void): void {
         this.client.on('connect', cb);
