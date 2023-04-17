@@ -103,6 +103,6 @@ export class Router {
         console.log('[ROUTER] - Turning off and setting load to 0');
         // shouldStop = true;
         await this.ports.dimmer.modulePower(0);
-        await this.ports.broker.publish('homeassistant/sensor/envoy-90/status', 'offline');
+        await this.ports.broker.publish('homeassistant/sensor/envoy-90/status', 'offline', {retain: true});
     }
 }

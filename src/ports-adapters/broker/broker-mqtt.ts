@@ -1,5 +1,6 @@
-import { Broker } from './broker.js';
+import { Broker, BrokerOptions } from './broker.js';
 import { AsyncMqttClient, connect } from 'async-mqtt'; // import connect from mqtt
+
 
 export class BrokerMQTT implements Broker {
     client: AsyncMqttClient;
@@ -22,8 +23,8 @@ export class BrokerMQTT implements Broker {
         this.client.on('error', cb);
     }
 
-    async publish(key: string, value: string): Promise<void> {
-        await this.client.publish(key, value);
+    async publish(key: string, value: string, options?: BrokerOptions): Promise<void> {
+        await this.client.publish(key, value, {retain: options?.retain});
     }
 
     isReady(): boolean {
