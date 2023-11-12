@@ -65,7 +65,11 @@ export class Router {
                 // TODO replace this by a logger
                 gridState.logNoProd();
             }
-        } else {
+        } 
+        
+        /* THE NIGHT MODE IS NOW HANDLED DIRECTLY BY THE DIMMER
+        
+        else {
             // Night time, it's time to control water temp
             if (gridState.isWaterUnderLowRange()) {
                 // Stay far from 50 to avoid harmonics
@@ -82,6 +86,7 @@ export class Router {
                 gridState.logNight(false);
             }
         }
+        */
         await sendToHaPromise;
     }
 

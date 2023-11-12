@@ -50,39 +50,5 @@ dayTestsSuite('It should stop dimmer if production is lower than consumption', a
 
 // TODO simulate a full tank
 
-const nightTestsSuite = suite('Router Night Mode');
-
-nightTestsSuite('It should do nothing if temperature is fine', async () => {
-    const { router, testAdapters } = createRouterWithWaterTankFromConfig({
-        loadPower: 1000,
-        maxPower: 100,
-    });
-    testAdapters.clock.setTime('night');
-    testAdapters.meter.setValues(500, 0);
-    testAdapters.dimmer.temp = 60;
-    await router.loopIteration();
-    assert.is(testAdapters.dimmer.power, 0);
-});
-
-nightTestsSuite('It heatWater and stop when the temp is good', async () => {
-    const { router, testAdapters } = createRouterWithWaterTankFromConfig({
-        loadPower: 1000,
-        maxPower: 100,
-    });
-    testAdapters.clock.setTime('night');
-    testAdapters.meter.setValues(500, 0);
-    testAdapters.dimmer.temp = 45;
-    await router.loopIteration();
-    assert.is(testAdapters.dimmer.power, 100);
-
-    testAdapters.dimmer.temp = 56;
-    await router.loopIteration();
-    assert.is(testAdapters.dimmer.power, 0);
-
-    testAdapters.dimmer.temp = 54;
-    await router.loopIteration();
-    assert.is(testAdapters.dimmer.power, 0);
-});
 
 dayTestsSuite.run();
-nightTestsSuite.run();
