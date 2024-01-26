@@ -14,7 +14,7 @@ let shouldStop = false;
 
 const config = buildConfigFromEnv();
 
-const mqttAdapter = new BrokerMQTT(config.mqttHost);
+const mqttAdapter = new BrokerMQTT(config.mqttHost, config.mqttUsername, config.mqttPassword);
 const wifiDimmer = new WifiDimmer(config.dimmerHostname);
 const envoyMeter = new RestLocalEnvoyMeter(config.envoyHostname, config.envoyToken);
 const momentClock = new MomentClock();

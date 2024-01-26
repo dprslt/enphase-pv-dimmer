@@ -1,5 +1,7 @@
 export type RouterConfig = {
     mqttHost: string;
+    mqttUsername: string;
+    mqttPassword: string;
     dimmerHostname: string;
     envoyHostname: string;
     envoyToken: string;
@@ -13,6 +15,8 @@ export type LoadConfig = {
 export const buildConfigFromEnv = (): RouterConfig => {
     return {
         mqttHost: process.env['MQTT_HOST'] || '',
+        mqttUsername: process.env['MQTT_USERNAME'] || '',
+        mqttPassword: process.env['MQTT_PASSWORD'] || '',
         envoyHostname: process.env['ENVOY_HOSTNAME'] || '',
         envoyToken: process.env['TOKEN'] || '',
         dimmerHostname: process.env['DIMMER_HOSTNAME'] || '',

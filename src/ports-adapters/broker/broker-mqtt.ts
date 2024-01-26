@@ -1,14 +1,15 @@
 import { Broker, BrokerOptions } from './broker.js';
 import { AsyncMqttClient, connect } from 'async-mqtt'; // import connect from mqtt
 
-
 export class BrokerMQTT implements Broker {
     client: AsyncMqttClient;
 
-    constructor(private MQTTHost: string) {
+    constructor(private MQTTHost: string, private MQTTUser: string, private MQTTPassword: string) {
         this.client = connect(`mqtt://${this.MQTTHost}`, {
             keepalive: 10,
             connectTimeout: 4000,
+            username: MQTTUser,
+            password: MQTTPassword,
         });
 
         this.client.on('offline', () => this.client.reconnect());
@@ -24,7 +25,7 @@ export class BrokerMQTT implements Broker {
     }
 
     async publish(key: string, value: string, options?: BrokerOptions): Promise<void> {
-        await this.client.publish(key, value, {retain: options?.retain});
+        await this.client.publish(key, value, { retain: options?.retain });
     }
 
     isReady(): boolean {
