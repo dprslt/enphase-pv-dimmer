@@ -65,8 +65,8 @@ export class Router {
                 // TODO replace this by a logger
                 gridState.logNoProd();
             }
-        } 
-        
+        }
+
         /* THE NIGHT MODE IS NOW HANDLED DIRECTLY BY THE DIMMER
         
         else {
@@ -87,7 +87,9 @@ export class Router {
             }
         }
         */
-        await sendToHaPromise;
+
+        // Prevent a failing connection to the MQTT broker to block the thread
+        await Promise.race([sendToHaPromise, new Promise((resolve) => setTimeout(resolve, 2000))]);
     }
 
     async initialize() {
@@ -108,6 +110,6 @@ export class Router {
         console.log('[ROUTER] - Turning off and setting load to 0');
         // shouldStop = true;
         await this.ports.dimmer.modulePower(0);
-        await this.ports.broker.publish('homeassistant/sensor/envoy-90/status', 'offline', {retain: true});
+        await this.ports.broker.publish('homeassistant/sensor/envoy-90/status', 'offline', { retain: true });
     }
 }

@@ -30,7 +30,9 @@ export class HomeAssistant {
             value_template: '{{ value_json.power_grid }}',
             dev: this.devInfos,
         };
-        await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/power_grid/config`, JSON.stringify(consumptionConfig), {retain: true});
+        await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/power_grid/config`, JSON.stringify(consumptionConfig), {
+            retain: true,
+        });
 
         const productionConfig = {
             dev_cla: 'power',
@@ -44,7 +46,9 @@ export class HomeAssistant {
             value_template: '{{ value_json.power_solar }}',
             dev: this.devInfos,
         };
-        await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/power_solar/config`, JSON.stringify(productionConfig), {retain: true});
+        await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/power_solar/config`, JSON.stringify(productionConfig), {
+            retain: true,
+        });
 
         await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/status`, 'online');
 
@@ -52,7 +56,7 @@ export class HomeAssistant {
     }
 
     async publishMeteringValues(envoyMetersValues: { consumption: LightMeterReading; production: LightMeterReading }) {
-        if (!this.brokerPort.isReady) {
+        if (!this.brokerPort.isReady()) {
             console.log('[HomeAssistant] - Not connected to the broker, skipping');
             return;
         }
