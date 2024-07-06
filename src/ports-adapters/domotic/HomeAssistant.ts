@@ -60,6 +60,7 @@ export class HomeAssistant {
             console.log('[HomeAssistant] - Not connected to the broker, skipping');
             return;
         }
+        await this.brokerPort.publish(`homeassistant/sensor/${this.sensorName}/status`, 'online');
         await this.brokerPort.publish(
             'homeassistant/sensor/envoy-90/state',
             JSON.stringify({
